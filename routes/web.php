@@ -13,15 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'ProjectController@index')->name('projects');
 
 
 // project Routes
-Route::get('/projects/index','ProjectController@index')->name('projects.index');
-Route::post('/projects/add/{project}','ProjectController@add')->name('projects.add');
+Route::get('/projects', 'ProjectController@index')->name('projects');
+Route::get('/projects/create', 'ProjectController@create')->name('projects.create');
+Route::post('/projects/store', 'ProjectController@store')->name('projects.store');
 
 // task Routes
-Route::post('/task/add','TaskController@add')->name('task.add');
-Route::post('/task/{task}','TaskController@changeStatus')->name('task.change-status');
+Route::post('/task/add/{project}', 'TaskController@add')->name('task.add');
+Route::get('/task/change-status/{task}', 'TaskController@changeStatus')->name('task.change-status');

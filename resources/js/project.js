@@ -2,6 +2,7 @@ $(document).ready(function () {
 
     // add task funciton
     $('.add-task').on('click', function (e) {
+
         e.preventDefault();
 
         alert();
