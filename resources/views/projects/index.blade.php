@@ -12,39 +12,43 @@
                     <li>
                         project:
                         {{ $project->name }} >>
-                       
-                       
+
+
 
                         {{-- add new task form --}}
                         <div>
-                            <form action="{{ route('task.add',$project->id) }}" method="POST">
+                            <form action="{{ route('task.add', $project->id) }}" method="POST">
                                 @csrf
                                 @method('POST')
                                 <input type="text" name="task_name" value="" placeholder="write a new task">
-                              
-                                <button  type="submit" >add task</button>
-                                
+
+                                <button type="submit">add task</button>
+
                             </form>
                         </div>
 
                         @if ($project->tasks()->count() > 0)
-                        <span> progress: 
-                            {{ number_format(($project->tasks->whereIn('status', 'finished')->count() / $project->tasks->count()) * 100 ,1) }} %
-                        </span>
-                        
+                            <span> progress:
+                                {{ number_format(($project->tasks->whereIn('status', 'finished')->count() / $project->tasks->count()) * 100, 1) }}
+                                %
+                            </span>
+
                             {{-- list of tasks --}}
                             <ul class="task-list">
                                 @foreach ($project->tasks as $task)
                                     <li>
-                                        {{ $task->name }}  
-                                        <p class="status">{{ $task->status }}  <a href="{{ route('task.change-status', $task->id) }}">change</a></p>
-                                        
+                                        {{ $task->name }}
+                                        <p class="status">{{ $task->status }} @if ($task->status == 'finished')
+                                                <a href="{{ route('task.change-status', $task->id) }}">change</a>
+                                            @endif
+                                        </p>
+
                                     </li>
                                 @endforeach
                             </ul>
                         @else
 
-                        <p> there is no tasks yet</p>
+                            <p> there is no tasks yet</p>
                         @endif
 
                     </li>

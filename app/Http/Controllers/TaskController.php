@@ -12,12 +12,15 @@ class TaskController extends Controller
     {
        
         try {
+
             $task = $project->tasks()->create([
                 'name' => $request->task_name,
             ]);
+
             return  redirect()->route('projects')->with(['success' => 'new task is added']);
-          // return response()->json(['message'=>'massage']);
+
         } catch (\Exception $ex) {
+
             return  redirect()->route('projects')->with(['error' => 'can\'t be added']);
         }
     } // end of add()
@@ -31,7 +34,9 @@ class TaskController extends Controller
             $task->update([
                 'status' => $status,
             ]);
+
             return  redirect()->route('projects')->with(['success' => 'status changed']);
+            
         } catch (\Exception $ex) {
 
             return  redirect()->route('projects')->with(['error' => 'can\'t be changed']);

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,3 +25,6 @@ Route::post('/projects/store', 'ProjectController@store')->name('projects.store'
 // task Routes
 Route::post('/task/add/{project}', 'TaskController@add')->name('task.add');
 Route::get('/task/change-status/{task}', 'TaskController@changeStatus')->name('task.change-status');
+
+Auth::routes();
+
