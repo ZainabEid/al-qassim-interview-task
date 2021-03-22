@@ -8,11 +8,6 @@ use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('guest');
-    }// end of construct 
-
     public function index()
     {
         $projects = Project::all();

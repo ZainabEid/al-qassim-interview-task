@@ -38,7 +38,7 @@
                                 @foreach ($project->tasks as $task)
                                     <li>
                                         {{ $task->name }}
-                                        <p class="status">{{ $task->status }} @if ($task->status == 'finished')
+                                        <p class="status">{{ $task->status }} @if ($task->status != 'finished')
                                                 <a href="{{ route('task.change-status', $task->id) }}">change</a>
                                             @endif
                                         </p>
