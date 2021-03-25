@@ -2,65 +2,118 @@
 @section('content')
     <div class="container">
 
-        <a class="btn btn-outline-info" id="add-project" href="{{ route('projects.create') }}">add new project</a>
+        {{-- add new project button --}}
+        <div class="row">
+            <div class="col">
+                <a class="btn btn-outline-info" id="add-project" href="{{ route('projects.create') }}">add new project</a>
+            </div>
+        </div>
+
+        <div class="row">
+
+            {{-- projects and tasks table --}}
+            <div class="col">
+                @if ($projects->count() > 0)
+
+                    {{-- list of projects --}}
+                    <table class="table-bordered">
+                        <thead>
+
+                            <tr>
+                                <th scope="col" colspan="0" rowspan="2">#</th>
+                                <th scope="col" colspan="2" rowspan="2">project name</th>
+                                <th scope="col" rowspan="2">progress</th>
+                                <th scope="col" colspan="2">tasks</th>
+                            </tr>
+                            <tr>
+                                <th scope="col">task name</th>
+                                <th scope="col">status</th>
+                            </tr>
 
 
-        {{-- list of projects --}}
-        <ul>
-            @if ($projects->count() > 0)
-                @foreach ($projects as $project)
-                    <li>
-                        project:
-                        {{ $project->name }} >>
+                        </thead>
+                        <tbody>
+
+                            @foreach ($projects as $index => $project)
+
+                                {{-- project row --}}
+                                <tr id="{{ $project->id }}">
+                                    {{-- index --}}
+                                    <td rowspan="{{ $project->tasks()->count() ? $project->tasks()->count() + 1 : 0 }}">
+                                        {{ $index + 1 }}
+                                    </td>
+
+                                    {{-- project name --}}
+                                    <td colspan="2"
+                                        rowspan="{{ $project->tasks()->count() ? $project->tasks()->count() + 1 : 0 }}">
+                                        <span><a class="show-project" href="{{ route('projects.show', $project->id) }}"
+                                                title="show project details">{{ $project->name }}</a></span>
+
+                                        <a href="{{ route('task.add-task-form', $project->id) }}" type="button"
+                                            class="show-add-task-form btn btn-light btn-sm  " role="button"
+                                            title="add task"> <big> + </big> </a>
+                                    </td>
+
+                                    {{-- progress --}}
+                                    <td rowspan="{{ $project->tasks()->count() ? $project->tasks()->count() + 1 : 0 }}">
+                                        <span>
+                                            {{ $project->tasks()->count() ? number_format(($project->tasks->whereIn('status', 'finished')->count() / $project->tasks->count()) * 100, 1) : 0 }}
+                                            %
+                                        </span>
+                                    </td>
+
+                                </tr><!-- end of project row -->
+
+                                @if ($project->tasks()->count() > 0)
+
+                                    {{-- tasks rows --}}
+                                    @foreach ($project->tasks as $task)
+                                        <tr>
+                                            {{-- task name --}}
+                                            <td>{{ $task->name }}</td>
+
+                                            {{-- task staus --}}
+                                            <td>
+                                                <span class="status">
+
+                                                    {{ $task->status }}
+
+                                                    {{-- change link --}}
+                                                    @if ($task->status != 'finished')
+                                                        <a href="{{ route('task.change-status', $task->id) }}">change</a>
+                                                    @endif
+                                                </span>
+                                            </td>
+                                        </tr> <!-- end of task row -->
+                                    @endforeach
+                                @else
+                                    <td colspan="2"><span> there is no tasks yet</span></td>
+                                @endif
+
+
+                            @endforeach
+                        </tbody>
+                    </table>
+
+                @else
+                    <p> there is no projects yet</p>
+                @endif
+            </div>
+
+            {{-- project data --}}
+            <div class="col">
+                <div class="row " id="project-details">
+
+                    {{-- managed in public/js/project.js --}}
+
+                </div>
+            </div>
+        </div>
 
 
 
-                        {{-- add new task form --}}
-                        <div>
-                            <form action="{{ route('task.add', $project->id) }}" method="POST">
-                                @csrf
-                                @method('POST')
-                                <input type="text" name="task_name" value="" placeholder="write a new task">
-
-                                <button type="submit">add task</button>
-
-                            </form>
-                        </div>
-
-                        @if ($project->tasks()->count() > 0)
-                            <span> progress:
-                                {{ number_format(($project->tasks->whereIn('status', 'finished')->count() / $project->tasks->count()) * 100, 1) }}
-                                %
-                            </span>
-
-                            {{-- list of tasks --}}
-                            <ul class="task-list">
-                                @foreach ($project->tasks as $task)
-                                    <li>
-                                        {{ $task->name }}
-                                        <p class="status">{{ $task->status }} @if ($task->status != 'finished')
-                                                <a href="{{ route('task.change-status', $task->id) }}">change</a>
-                                            @endif
-                                        </p>
-
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @else
-
-                            <p> there is no tasks yet</p>
-                        @endif
-
-                    </li>
-                @endforeach
-
-            @else
-                <p> there is no projects yet</p>
-            @endif
-
-        </ul>
 
 
-    </div>
+    </div> <!--  end of container -->
 
 @endsection

@@ -33,7 +33,13 @@ class ProjectController extends Controller
             $request->session()->flash('error', 'there is an error');
             return redirect()->back();
         }
-    }// end of store
+    }// end of 
+    
+    public function show(Project $project)
+    {
+        $projects = Project::all();
+        return view('projects._show',compact('project','projects'));
+    }
 
     
 }// end of project controller

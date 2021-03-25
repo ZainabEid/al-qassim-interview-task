@@ -8,7 +8,7 @@
             @csrf
             @method('POST')
                 <label for="name"> enter project name: </label>
-                <input type="text" name="name" value="{{ old('name') }}">
+                <input type="text" name="name" value="{{ old('name') }}" placeholder="enter project name">
                 @error('name')
                     {{ $message }}
                 @enderror
@@ -29,7 +29,7 @@
                 <br>
                 
                 <label for="creator"> enter creator name:</label>
-                <input type="text" name="creator" value="{{ old('creator') }}">
+                <input type="text" name="creator" value="{{ old('creator') }}" placeholder="enter creator name">
                 @error('creator')
                 {{ $message }}
                 @enderror

@@ -1,4 +1,3 @@
-$(document).ready(function () {
 
     // add task funciton
     $('.add-task').on('click', function (e) {
@@ -52,5 +51,8 @@ $(document).ready(function () {
 
     });
 
+    $('.show-project').on('click', function () {
+        e.preventDefault();
+        $('#project-details').append(content);
+    });
 
-});

@@ -8,20 +8,28 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    public function add(Project $project, Request $request)
+    public function addTaskForm(Project $project)
     {
+        return view('projects._add_task_form',compact('project'));
+    }
+
+
+    public function store(Project $project, Request $request)
+    {
+        //return response()->json(['returned' => $request->task_name]);
        
         try {
 
-            $task = $project->tasks()->create([
+            $new_task = $project->tasks()->create([
                 'name' => $request->task_name,
             ]);
 
-            return  redirect()->route('projects')->with(['success' => 'new task is added']);
+                $task = Task::findOrFail($new_task->id);
+            return response()->json(['task_name' => $task->name , 'task_status' => $task->status , 'project_id' => $project->id]);
 
         } catch (\Exception $ex) {
 
-            return  redirect()->route('projects')->with(['error' => 'can\'t be added']);
+            return response()->json(['error' => 'cant add new task', 'ex:' => $ex->getMessage()]);
         }
     } // end of add()
 

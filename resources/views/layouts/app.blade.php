@@ -11,6 +11,8 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script  language="JavaScript" type="text/javascript"  src="{{ asset('js/project.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -496,5 +498,7 @@
             @yield('content')
         </main>
     </div>
+
+   
 </body>
 </html>

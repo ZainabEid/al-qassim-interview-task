@@ -21,9 +21,11 @@ Route::get('/', 'ProjectController@index')->name('projects');
 Route::get('/projects', 'ProjectController@index')->name('projects');
 Route::get('/projects/create', 'ProjectController@create')->name('projects.create');
 Route::post('/projects/store', 'ProjectController@store')->name('projects.store');
+Route::get('/projects/show/{project}', 'ProjectController@show')->name('projects.show');
 
 // task Routes
-Route::post('/task/add/{project}', 'TaskController@add')->name('task.add');
+Route::get('/task/form/{project}', 'TaskController@addTaskForm')->name('task.add-task-form');
+Route::get('/task/store/{project}', 'TaskController@store')->name('task.store');
 Route::get('/task/change-status/{task}', 'TaskController@changeStatus')->name('task.change-status');
 
 Auth::routes();
