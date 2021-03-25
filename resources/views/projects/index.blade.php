@@ -68,7 +68,7 @@
 
                                     {{-- tasks rows --}}
                                     @foreach ($project->tasks as $task)
-                                        <tr>
+                                        <tr >
                                             {{-- task name --}}
                                             <td>{{ $task->name }}</td>
 

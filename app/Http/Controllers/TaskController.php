@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\Task;
+use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -24,8 +25,18 @@ class TaskController extends Controller
                 'name' => $request->task_name,
             ]);
 
-                $task = Task::findOrFail($new_task->id);
-            return response()->json(['task_name' => $task->name , 'task_status' => $task->status , 'project_id' => $project->id]);
+            $task = Task::findOrFail($new_task->id);
+            $tasks_count = $project->tasks->count();
+
+            $next_project = Project::where('created_at','>',$project->created_at)->oldest()->first();
+           return response()->json([
+               'task_name' => $task->name ,
+               'task_status' => $task->status ,
+               'task_id' => $task->id ,
+               'project_id' => $project->id ,
+               'next_project_id' => $next_project->id,
+               'tasks_count' =>  $tasks_count + 1,
+               ]);
 
         } catch (\Exception $ex) {
 
