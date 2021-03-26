@@ -50,16 +50,17 @@
                                                 title="show project details">{{ $project->name }}</a></span>
 
                                         <a href="{{ route('task.add-task-form', $project->id) }}" type="button"
-                                            class="show-add-task-form btn btn-light btn-sm  " role="button"
-                                            title="add task"> <big> + </big> </a>
+                                            class="show-add-task-form btn btn-warning btn-sm  " role="button"
+                                            title="add task"> +  add task </a>
                                     </td>
 
                                     {{-- progress --}}
-                                    <td rowspan="{{ $project->tasks()->count() ? $project->tasks()->count() + 1 : 0 }}">
-                                        <span>
-                                            {{ $project->tasks()->count() ? number_format(($project->tasks->whereIn('status', 'finished')->count() / $project->tasks->count()) * 100, 1) : 0 }}
+                                    <td id="progress{{ $project->id }}" rowspan="{{ $project->tasks()->count() ? $project->tasks()->count() + 1 : 0 }}">
+
+                                        {{-- this codde will be calculated in a helper function calculatePercentage() --}}
+                                        {{-- number_format(($project->tasks->whereIn('status', 'finished')->count() / $project->tasks->count()) * 100, 1) --}}
+                                          {{ $project->tasks()->count() ? calculatePercentage($project->id) : 0 }}
                                             %
-                                        </span>
                                     </td>
 
                                 </tr><!-- end of project row -->
@@ -68,7 +69,7 @@
 
                                     {{-- tasks rows --}}
                                     @foreach ($project->tasks as $task)
-                                        <tr >
+                                        <tr  class="{{ $project->id }}">
                                             {{-- task name --}}
                                             <td>{{ $task->name }}</td>
 

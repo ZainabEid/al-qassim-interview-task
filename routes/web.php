@@ -27,6 +27,9 @@ Route::get('/projects/show/{project}', 'ProjectController@show')->name('projects
 Route::get('/task/form/{project}', 'TaskController@addTaskForm')->name('task.add-task-form');
 Route::get('/task/store/{project}', 'TaskController@store')->name('task.store');
 Route::get('/task/change-status/{task}', 'TaskController@changeStatus')->name('task.change-status');
+Route::get('/calculate-percentage/{project_id}', function ($project_id) {
+    return calculatePercentage($project_id); // helper function
+})->name('calculate-percentage');
 
 Auth::routes();
 

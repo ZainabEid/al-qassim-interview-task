@@ -28,19 +28,17 @@ class TaskController extends Controller
             $task = Task::findOrFail($new_task->id);
             $tasks_count = $project->tasks->count();
 
-            $next_project = Project::where('created_at','>',$project->created_at)->oldest()->first();
            return response()->json([
                'task_name' => $task->name ,
                'task_status' => $task->status ,
                'task_id' => $task->id ,
                'project_id' => $project->id ,
-               'next_project_id' => $next_project->id,
                'tasks_count' =>  $tasks_count + 1,
                ]);
 
         } catch (\Exception $ex) {
 
-            return response()->json(['error' => 'cant add new task', 'ex:' => $ex->getMessage()]);
+            return response()->json(['error' => 'cant add new task ' , 'ex:' => $ex->getMessage()]);
         }
     } // end of add()
 

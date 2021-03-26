@@ -37,20 +37,16 @@ $(document).ready(function () { // public file
 
                 
                 // append html after the last task tr.
-                $tr_next_project_id = '#' + result.next_project_id;
-                $(html).insertBefore($tr_next_project_id);
+               $('.' + result.project_id).last().after(html);
 
                 // project colscope incresed by one.
                 $('#' + result.project_id).children().attr('rowspan', result.tasks_count);
 
                 // calculate the persentage
-                
+                calculatePercentage( result.project_id);
             }
         });
     });
-
-
-
 
     //change status function
     $('.change-status').on('click', function (e) {
@@ -88,6 +84,21 @@ $(document).ready(function () { // public file
 
 
 });
+
+ // calulate the progress percentage
+ function calculatePercentage(project_id){
+    $.ajax({
+
+         url: " /calculate-percentage/ " + project_id  ,
+         method: 'GET',
+         success: function (percentage) {
+            $('#progress' + project_id).html(percentage);
+
+           }
+     });
+
+ }
+
 
 // fills the project-details div with show-project OR show-add-task-form
 function projectDetails(url) {
