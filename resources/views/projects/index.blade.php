@@ -36,32 +36,41 @@
 
                             @foreach ($projects as $index => $project)
 
+                                @php
+                                    $rowspan = $project->tasks()->count() ? $project->tasks()->count() + 1 : 1;
+                                @endphp
+
                                 {{-- project row --}}
                                 <tr id="{{ $project->id }}">
                                     {{-- index --}}
-                                    <td rowspan="{{ $project->tasks()->count() ? $project->tasks()->count() + 1 : 0 }}">
+                                    <td rowspan="{{ $rowspan }}">
                                         {{ $index + 1 }}
                                     </td>
 
                                     {{-- project name --}}
-                                    <td colspan="2"
-                                        rowspan="{{ $project->tasks()->count() ? $project->tasks()->count() + 1 : 0 }}">
+                                    <td colspan="2" rowspan="{{ $rowspan }}">
                                         <span><a class="show-project" href="{{ route('projects.show', $project->id) }}"
                                                 title="show project details">{{ $project->name }}</a></span>
 
                                         <a href="{{ route('task.add-task-form', $project->id) }}" type="button"
                                             class="show-add-task-form btn btn-warning btn-sm  " role="button"
-                                            title="add task"> +  add task </a>
+                                            title="add task"> + add task </a>
                                     </td>
+
 
                                     {{-- progress --}}
-                                    <td id="progress{{ $project->id }}" rowspan="{{ $project->tasks()->count() ? $project->tasks()->count() + 1 : 0 }}">
+                                    <td id="progress{{ $project->id }}" rowspan="{{ $rowspan }}">
 
-                                        {{-- this codde will be calculated in a helper function calculatePercentage() --}}
-                                        {{-- number_format(($project->tasks->whereIn('status', 'finished')->count() / $project->tasks->count()) * 100, 1) --}}
-                                          {{ $project->tasks()->count() ? calculatePercentage($project->id) : 0 }}
-                                            %
+                                        {{ $project->tasks()->count() ? calculatePercentage($project->id) : 0 }}
+                                        %
                                     </td>
+
+                                    @if (!$project->tasks()->count())
+                                        <td id="no-task-{{ $project->id }}" colspan="2" rowspan="{{ $rowspan }}">
+                                            <span> there is no tasks yet</span>
+                                        </td>
+
+                                    @endif
 
                                 </tr><!-- end of project row -->
 
@@ -69,26 +78,23 @@
 
                                     {{-- tasks rows --}}
                                     @foreach ($project->tasks as $task)
-                                        <tr  class="{{ $project->id }}">
+                                        <tr class="{{ $project->id }}">
                                             {{-- task name --}}
                                             <td>{{ $task->name }}</td>
 
                                             {{-- task staus --}}
                                             <td>
-                                                <span class="status">
 
-                                                    {{ $task->status }}
+                                                <p id="status-{{ $task->id }}">{{ $task->status }}</p>
 
-                                                    {{-- change link --}}
-                                                    @if ($task->status != 'finished')
-                                                        <a href="{{ route('task.change-status', $task->id) }}">change</a>
-                                                    @endif
-                                                </span>
+                                                {{-- change link --}}
+                                                @if ($task->status != 'finished')
+                                                    <a id="change-status-link-{{ $task->id }}" class="change-status"
+                                                        href="{{ route('task.change-status', $task->id) }}">change</a>
+                                                @endif
                                             </td>
                                         </tr> <!-- end of task row -->
                                     @endforeach
-                                @else
-                                    <td colspan="2"><span> there is no tasks yet</span></td>
                                 @endif
 
 

@@ -11,34 +11,42 @@ class TaskController extends Controller
 {
     public function addTaskForm(Project $project)
     {
-        return view('projects._add_task_form',compact('project'));
+        return view('projects._add_task_form', compact('project'));
     }
 
 
     public function store(Project $project, Request $request)
     {
         //return response()->json(['returned' => $request->task_name]);
-       
-        try {
 
+        try {
+            // validation 
+
+            // store data
             $new_task = $project->tasks()->create([
                 'name' => $request->task_name,
+                
             ]);
 
+            //compact data
             $task = Task::findOrFail($new_task->id);
             $tasks_count = $project->tasks->count();
+            $project_id = $project->id;
 
-           return response()->json([
-               'task_name' => $task->name ,
-               'task_status' => $task->status ,
-               'task_id' => $task->id ,
-               'project_id' => $project->id ,
-               'tasks_count' =>  $tasks_count + 1,
-               ]);
+            if ($request->ajax()) {
 
+                return response()->json([
+                    'tasks_count' => $tasks_count,
+                    'project_id' =>  $project_id,
+                    'tr' => view('projects._new_task_tr', compact('task', 'project_id'))->render(),
+                ]);
+
+            } else {
+                return view('projects');
+            }
         } catch (\Exception $ex) {
 
-            return response()->json(['error' => 'cant add new task ' , 'ex:' => $ex->getMessage()]);
+            return response()->json(['error' => 'cant add new task ', 'ex:' => $ex->getMessage()]);
         }
     } // end of add()
 
@@ -52,11 +60,14 @@ class TaskController extends Controller
                 'status' => $status,
             ]);
 
-            return  redirect()->route('projects')->with(['success' => 'status changed']);
-            
+            return  response()->json([
+                'status' =>  $task->status,
+                 'task_id' => $task->id,
+                 'project_id' => $task->project->id,
+                 ]);
         } catch (\Exception $ex) {
 
-            return  redirect()->route('projects')->with(['error' => 'can\'t be changed']);
+            return response()->json(['error' => 'can\'t be changed']);
         }
     } // end of cahnge status
 }// end of task controller

@@ -8,6 +8,7 @@ $(document).ready(function () { // public file
         projectDetails(url)
     });
 
+    // add task button
     $(document).on('click', '.add-task', function (e) {
         e.preventDefault();
 
@@ -22,49 +23,56 @@ $(document).ready(function () { // public file
                 task_name: task_name,
             },
             success: function (result) {
-                console.log(result);
 
-                //return with a table row to append in the project_id tr
-                var html = ` <tr >
-                <td> ${result.task_name}</td>
-                <td><span class="status">
-                        ${result.task_status}
-                            <a href="#">change</a>
-                    </span>
-                </td>
-            </tr>`
-                // add the change route  to href : ${ route('task.change-status',result.project_id) }
+                //result is tr, project_id, tasks_count
 
-                
-                // append html after the last task tr.
-               $('.' + result.project_id).last().after(html);
+                // project rowspan setting.
+                var rowspan = Number(result.tasks_count) + 1;
+                $('#' + result.project_id).children().attr('rowspan', rowspan );
 
-                // project colscope incresed by one.
-                $('#' + result.project_id).children().attr('rowspan', result.tasks_count);
+                // check if it is the first task in the project
+                if (result.tasks_count == 1) {
+
+                    //remove there is now tasks cell
+                    $('#no-task-' + result.project_id).remove();
+
+                    // add the first task row 
+                    $(result.tr).insertAfter('#' + result.project_id);
+
+                } else {
+                    // append html after the last task tr.
+                    $('.' + result.project_id).last().after(result.tr);
+                }
+
 
                 // calculate the persentage
-                calculatePercentage( result.project_id);
-            }
-        });
-    });
+                calculatePercentage(result.project_id);
+
+            }// end of ajax succes function
+        });// end of ajax
+    });//end of add-task click
 
     //change status function
-    $('.change-status').on('click', function (e) {
+    $(document).on('click','.change-status', function (e) {
         e.preventDefault();
+        console.log('in change status funciotn');
 
         var _token = $('meta[name="csrf-token"]').attr('content');
-        var url = $(this).attr('href').val();
+        var url = $(this).attr('href');
 
         $.ajax({
             url: url,
-            method: 'POST',
+            method: 'GET',
             data: {
                 _token: _token,
             },
-            success: function (result) {
-                $(this).siblings('p').find('.status').empty();
-                $(this).siblings('p').find('.status').html(result.status);
-
+            success: function (response) {
+                console.log(response.status);
+                if (response.status == 'finished') {
+                    $('#change-status-link-' + response.task_id ).remove();
+                }
+                $("#status-" + response.task_id).html(response.status);
+                calculatePercentage(response.project_id)
             }
         });
 
@@ -85,19 +93,19 @@ $(document).ready(function () { // public file
 
 });
 
- // calulate the progress percentage
- function calculatePercentage(project_id){
+// calulate the progress percentage
+function calculatePercentage(project_id) {
     $.ajax({
 
-         url: " /calculate-percentage/ " + project_id  ,
-         method: 'GET',
-         success: function (percentage) {
+        url: " /calculate-percentage/ " + project_id,
+        method: 'GET',
+        success: function (percentage) {
             $('#progress' + project_id).html(percentage);
 
-           }
-     });
+        }
+    });
 
- }
+}
 
 
 // fills the project-details div with show-project OR show-add-task-form
