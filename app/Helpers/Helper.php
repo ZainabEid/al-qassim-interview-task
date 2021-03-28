@@ -6,6 +6,7 @@
 use App\Models\Project;
 use SebastianBergmann\Environment\Console;
 
+// calculate percentage 
 function calculatePercentage($project_id)
 {
     try{

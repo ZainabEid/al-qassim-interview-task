@@ -85,6 +85,7 @@
                                             {{-- task staus --}}
                                             <td>
 
+                                                {{-- status --}}
                                                 <p id="status-{{ $task->id }}">{{ $task->status }}</p>
 
                                                 {{-- change link --}}
