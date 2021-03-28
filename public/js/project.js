@@ -22,31 +22,31 @@ $(document).ready(function () { // public file
             data: {
                 task_name: task_name,
             },
-            success: function (result) {
+            success: function (response) {
 
-                //result is tr, project_id, tasks_count
+                //response is tr, project_id, tasks_count
 
                 // project rowspan setting.
-                var rowspan = Number(result.tasks_count) + 1;
-                $('#' + result.project_id).children().attr('rowspan', rowspan );
+                var rowspan = Number(response.tasks_count) + 1;
+                $('#' + response.project_id).children().attr('rowspan', rowspan );
 
                 // check if it is the first task in the project
-                if (result.tasks_count == 1) {
+                if (response.tasks_count == 1) {
 
                     //remove there is now tasks cell
-                    $('#no-task-' + result.project_id).remove();
+                    $('#no-task-' + response.project_id).remove();
 
                     // add the first task row 
-                    $(result.tr).insertAfter('#' + result.project_id);
+                    $(response.tr).insertAfter('#' + response.project_id);
 
                 } else {
                     // append html after the last task tr.
-                    $('.' + result.project_id).last().after(result.tr);
+                    $('.' + response.project_id).last().after(response.tr);
                 }
 
 
                 // calculate the persentage
-                calculatePercentage(result.project_id);
+                calculatePercentage(response.project_id);
 
             }// end of ajax succes function
         });// end of ajax
@@ -55,7 +55,6 @@ $(document).ready(function () { // public file
     //change status function
     $(document).on('click','.change-status', function (e) {
         e.preventDefault();
-        console.log('in change status funciotn');
 
         var _token = $('meta[name="csrf-token"]').attr('content');
         var url = $(this).attr('href');
@@ -67,18 +66,24 @@ $(document).ready(function () { // public file
                 _token: _token,
             },
             success: function (response) {
-                console.log(response.status);
+                //response contains status, project_id, task_id
+
+                //check status if finished remove the link
                 if (response.status == 'finished') {
                     $('#change-status-link-' + response.task_id ).remove();
                 }
+
+                // change the status
                 $("#status-" + response.task_id).html(response.status);
+
+                // calculate the persentage
                 calculatePercentage(response.project_id)
-            }
-        });
+            }// end of success function 
+        });// end of ajax
 
-    });
+    });//end of document click change-status 
 
-    // show project script
+    // show project script 
     $('.show-project').on('click', function (e) {
         e.preventDefault();
 
@@ -86,12 +91,10 @@ $(document).ready(function () { // public file
 
         projectDetails(url)
 
-    });
+    });// end of show project 
 
 
-
-
-});
+}); // end of document ready
 
 // calulate the progress percentage
 function calculatePercentage(project_id) {
@@ -102,13 +105,14 @@ function calculatePercentage(project_id) {
         success: function (percentage) {
             $('#progress' + project_id).html(percentage);
 
-        }
-    });
+        }// end of succes
+    });// end of ajax
 
-}
+}// end of calculatepercentage funciton
 
 
 // fills the project-details div with show-project OR show-add-task-form
+// [right col area]
 function projectDetails(url) {
     $.ajax({
         url: url,
@@ -116,6 +120,6 @@ function projectDetails(url) {
         success: function (result) {
             $('#project-details').empty();
             $('#project-details').append(result);
-        }
-    });
-}
+        }// end of success 
+    });// end of ajax
+}// end of project details function
